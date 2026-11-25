@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Social Launch: Wagstart Puppy Kit | Social Media and Mobile Marketing Simulation</title>
+<style>
+:root{--bg:#10243a;--panel:#183552;--panel2:#21476c;--btn:#285580;--btnhover:#316699;--ink:#fbf5ea;--muted:#cfe0f0;--amber:#ffb454;--amberink:#10243a;--good:#8be8b0;--bad:#ffa394;--ok:#ffd98a;--line:#4f7aa6}
+*{box-sizing:border-box}
+html{scroll-padding-bottom:7rem;scroll-padding-top:1rem}
+body{margin:0;background:radial-gradient(1200px 600px at 80% -10%,#1d4668 0%,var(--bg) 60%);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.55;min-height:100vh}
+:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
+.skip{position:absolute;left:-999px;top:0;background:var(--amber);color:var(--amberink);padding:.6rem 1rem;z-index:100;font-weight:700}
+.skip:focus{left:8px;top:8px}
+header.top{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;padding:.9rem 1.25rem;border-bottom:1px solid var(--line);background:rgba(16,36,58,.92)}
+.brand{display:flex;align-items:center;gap:.75rem;flex:1 1 280px}
+.brand h1{font-size:1.15rem;margin:0;line-height:1.25}
+.brand small{display:block;color:var(--muted);font-weight:400;font-size:.9rem}
+.controls{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+.progresswrap{flex:1 1 100%;display:flex;align-items:center;gap:.8rem}
+.progresswrap .label{font-size:.95rem;color:var(--muted);min-width:15rem}
+.bar{flex:1;height:10px;background:#0b1a2b;border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,#ffb454,#ff8a3d);width:0;transition:width .6s ease}
+main{max-width:1040px;margin:0 auto;padding:1rem 1.25rem 3rem}
+#board{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:.8rem 1rem;margin-bottom:1.2rem}
+#board h2{font-size:.95rem;margin:0 0 .5rem;color:var(--muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.meters{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem 1rem}
+.meter .row{display:flex;justify-content:space-between;gap:.4rem;font-size:.92rem}
+.meter .row b{font-variant-numeric:tabular-nums}
+.meter .track{height:9px;background:#0b1a2b;border:1px solid var(--line);border-radius:99px;overflow:hidden;margin-top:.25rem}
+.meter .track i{display:block;height:100%;width:0;background:var(--amber);transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.delta{font-size:.82rem;font-weight:700;margin-left:.3rem}.delta.up{color:var(--good)}.delta.down{color:var(--bad)}
+#stage{outline:none}
+#stage>.wrap{animation:rise .5s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.kicker{color:var(--amber);font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:.85rem;margin:0}
+h2.title{font-size:1.75rem;margin:.15rem 0 1rem;line-height:1.2;outline:none}
+h3{font-size:1.1rem;margin:0 0 .4rem}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:1.1rem 1.25rem;margin:0 0 1rem}
+.dana{display:flex;gap:1rem;align-items:flex-start}
+.avatar{flex:0 0 52px;height:52px;border-radius:50%;background:var(--amber);color:var(--amberink);display:grid;place-items:center;font-weight:800}
+.who{font-weight:700;margin:0}.role{color:var(--muted);font-size:.9rem;margin:0 0 .4rem}.say{margin:.35rem 0}
+.hero{display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:center}
+.goals{margin:.4rem 0 0;padding-left:1.2rem}.goals li{margin:.25rem 0}
+.counter{color:var(--muted);font-size:.9rem;margin:0 0 .4rem}
+.scenario{font-size:1.1rem;background:var(--panel2);border-left:5px solid var(--amber);padding:.8rem 1rem;border-radius:8px;margin:.2rem 0 .8rem}
+.ask{font-weight:700;margin:.2rem 0 .7rem}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.6rem}
+.groupname{font-size:.9rem;color:var(--muted);font-weight:700;margin:.8rem 0 .4rem;text-transform:uppercase;letter-spacing:.05em}
+.opt,.btn{font:inherit;color:var(--ink);background:var(--btn);border:2px solid var(--line);border-radius:10px;padding:.75rem .9rem;text-align:left;cursor:pointer;transition:transform .12s,background .15s,border-color .15s}
+.opt:hover,.btn:hover{background:var(--btnhover);border-color:#8fb4da}
+.opt:active,.btn:active{transform:scale(.98)}
+.opt .sub{display:block;color:var(--muted);font-size:.9rem;margin-top:.2rem}
+.opt[aria-disabled=true]{cursor:default}
+.opt[aria-disabled=true]:hover{background:var(--btn);border-color:var(--line)}
+.opt.chosen.t-best{border-color:var(--good);background:#1b5148;animation:pop .45s ease}
+.opt.chosen.t-ok{border-color:var(--ok);background:#4f4826}
+.opt.chosen.t-poor{border-color:var(--bad);background:#5b3231}
+.opt.reveal{border-color:var(--good);border-style:dashed}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.04)}100%{transform:scale(1)}}
+.badge{display:inline-block;margin-top:.35rem;font-size:.82rem;font-weight:800;padding:.1rem .5rem;border-radius:99px;background:#0b1a2b;border:1px solid currentColor}
+.t-best .badge,.reveal .badge{color:var(--good)}.t-ok .badge{color:var(--ok)}.t-poor .badge{color:var(--bad)}
+.btn.primary{background:var(--amber);color:var(--amberink);border-color:var(--amber);font-weight:800;text-align:center}
+.btn.primary:hover{background:#ffc67a;border-color:#ffc67a}
+.btn.ghost{background:transparent}
+.btn[disabled],.btn[aria-disabled=true]{opacity:.55;cursor:not-allowed}
+.fb{min-height:1.2rem;margin:.8rem 0 0}
+.fb .msg{background:var(--panel2);border-radius:10px;padding:.7rem .9rem;animation:rise .35s ease both}
+.fb strong{display:block;margin-bottom:.15rem}
+.fb.t-best strong{color:var(--good)}.fb.t-ok strong{color:var(--ok)}.fb.t-poor strong{color:var(--bad)}
+.actions{display:flex;gap:.7rem;margin-top:1rem;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:.8rem}
+.pick{background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:1rem;display:flex;flex-direction:column;gap:.4rem}
+.pick.on{border-color:var(--amber);background:#2b4d6f}
+.pick h4{margin:0;font-size:1.05rem}
+.pick .cost{font-weight:800;color:var(--amber)}
+.pick ul{margin:.2rem 0;padding-left:1.1rem;font-size:.92rem;color:var(--muted)}
+.pick .stats{display:flex;flex-wrap:wrap;gap:.3rem .8rem;font-size:.92rem}
+.pick .stats span{white-space:nowrap}
+.pick .toggle{margin-top:auto}
+.summarybar{position:sticky;bottom:0;background:#0b1a2bee;border:1px solid var(--line);border-radius:12px;padding:.7rem 1rem;margin-top:1rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap;justify-content:space-between}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{text-align:left;padding:.45rem .6rem;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:700}
+.big{font-size:3rem;font-weight:900;color:var(--amber);line-height:1}
+.pill{display:inline-block;padding:.1rem .6rem;border-radius:99px;font-size:.85rem;font-weight:700;border:1px solid currentColor}
+.pill.best{color:var(--good)}.pill.ok{color:var(--ok)}.pill.poor{color:var(--bad)}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:.7rem 1rem;margin:.8rem 0}
+summary{cursor:pointer;font-weight:700}
+dl{margin:.6rem 0 0}dt{font-weight:700;margin-top:.5rem}dd{margin:0;color:var(--muted)}
+select{font:inherit;background:var(--btn);color:var(--ink);border:2px solid var(--line);border-radius:8px;padding:.4rem .5rem;max-width:100%}
+label{font-size:.92rem;color:var(--muted)}
+footer{max-width:1040px;margin:0 auto;padding:1rem 1.25rem 2.5rem;color:var(--muted);font-size:.88rem}
+.pup{animation:bob 3.5s ease-in-out infinite}.pup .tail{transform-origin:52px 44px;animation:wag 1.2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes wag{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(16deg)}}
+@media (max-width:640px){.hero{grid-template-columns:1fr}.progresswrap .label{min-width:0}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<header class="top">
+  <div class="brand">
+    <svg class="pup" width="50" height="50" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+      <path class="tail" d="M50 46 Q62 36 58 26" fill="none" stroke="#d9a066" stroke-width="6" stroke-linecap="round"/>
+      <ellipse cx="30" cy="46" rx="20" ry="13" fill="#e8b27a"/>
+      <circle cx="26" cy="28" r="14" fill="#e8b27a"/>
+      <path d="M13 22 Q6 34 15 40 Q18 30 17 22Z" fill="#b97a45"/><path d="M39 22 Q46 34 37 40 Q34 30 35 22Z" fill="#b97a45"/>
+      <ellipse cx="26" cy="33" rx="7" ry="5" fill="#fbe3c4"/>
+      <circle cx="21" cy="27" r="2.2" fill="#10243a"/><circle cx="31" cy="27" r="2.2" fill="#10243a"/>
+      <ellipse cx="26" cy="31" rx="2.6" ry="2" fill="#10243a"/>
+      <path d="M26 33 v3 M22 37 q4 3 8 0" stroke="#10243a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    </svg>
+    <h1>Social Launch: Wagstart Puppy Kit<small>Social media and mobile marketing simulation</small></h1>
+  </div>
+  <div class="controls" id="controls">
+    <button class="btn" id="narrToggle" aria-pressed="true">Narration: On</button>
+    <details id="voiceBox" style="margin:0;padding:.3rem .7rem"><summary>Voice settings</summary>
+      <p style="margin:.5rem 0"><label for="voiceSel">Voice</label><br><select id="voiceSel"></select></p>
+      <p style="margin:.5rem 0"><label for="rateSel">Speed</label><br><select id="rateSel"><option value="0.85">Slower</option><option value="0.95" selected>Natural</option><option value="1.1">Faster</option></select></p>
+      <p style="margin:.5rem 0"><button class="btn" id="voiceTest" type="button">Hear a sample</button></p></details>
+  </div>
+  <div class="progresswrap"><span class="label" id="progLabel">Briefing</span>
+    <div class="bar" id="progBar" role="progressbar" aria-labelledby="progLabel" aria-valuemin="0" aria-valuemax="8" aria-valuenow="0"><i id="progFill"></i></div></div>
+</header>
+<main id="main">
+  <section id="board" aria-label="Campaign scoreboard"><h2>Campaign scoreboard</h2><div class="meters" id="meters"></div></section>
+  <div id="stage" tabindex="-1" aria-label="Simulation stage"></div>
+</main>
+<footer>Concepts are based on Kerin and Hartley, <em>Marketing: The Core</em>, Chapter 17 (2024 Release). Wagstart Puppy Co., Priya Nair, and all figures in this simulation are fictional and for practice only.</footer>
+
+<script>
+(() => {
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+const money = n => '$' + Math.round(n).toLocaleString('en-US');
+const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let uid = 0;
+function h(tag, props, ...kids) {
+  const e = document.createElement(tag);
+  if (props) for (const k in props) { const v = props[k]; if (v === undefined || v === null || v === false) continue;
+    if (k === 'class') e.className = v; else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? '' : v); }
+  for (const kid of kids.flat()) if (kid !== null && kid !== undefined && kid !== false) e.append(kid.nodeType ? kid : document.createTextNode(kid));
+  return e;
+}
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+/* ---------- state ---------- */
+const BUDGET = 60000, INFL_CAP = 12000, PLAT_CAP = 24000, MOBILE_CAP = 12000;
+let S;
+const fresh = () => ({ spent: 0, awBase: 0, awAdd: 0, engAdd: 0, salesAdd: 0, trustAdd: 0, iqC: 0, iqT: 0, log: [], plats: [], mobile: [], platSpent: 0 });
+function derived() {
+  const reach = clamp(Math.round(S.awBase) + S.awAdd, 0, 95);
+  const eng = clamp(Math.round(S.engAdd), 0, 100);
+  const sales = clamp(Math.round(0.4 * reach * (0.45 + 0.55 * Math.min(1, eng / 80))) + S.salesAdd, 0, 100);
+  const trust = clamp(35 + S.trustAdd, 0, 100);
+  return { reach, eng, sales, trust, budget: BUDGET - S.spent };
+}
+
+/* ---------- scoreboard ---------- */
+const BOARD = [
+  { k: 'budget', label: 'Budget left', fmt: v => money(v), max: BUDGET },
+  { k: 'reach', label: 'Reach', fmt: v => v + ' of 100', max: 100 },
+  { k: 'eng', label: 'Engagement', fmt: v => v + ' of 100', max: 100 },
+  { k: 'sales', label: 'Sales', fmt: v => v + ' of 100', max: 100 },
+  { k: 'trust', label: 'Brand trust', fmt: v => v + ' of 100', max: 100 },
+  { k: 'iq', label: 'Marketing IQ', fmt: (v, d) => d.iqC + ' of ' + d.iqT, max: 100 }
+];
+const prev = {};
+function buildBoard() {
+  const host = $('#meters'); host.replaceChildren();
+  BOARD.forEach(m => host.append(h('div', { class: 'meter' },
+    h('div', { class: 'row' }, h('span', null, m.label), h('span', null, h('b', { id: 'mv-' + m.k }), h('span', { class: 'delta', 'aria-hidden': 'true', id: 'md-' + m.k }))),
+    h('div', { class: 'track', role: 'meter', 'aria-label': m.label, 'aria-valuemin': '0', 'aria-valuemax': String(m.max), 'aria-valuenow': '0', id: 'mt-' + m.k }, h('i', { id: 'mf-' + m.k })))));
+  BOARD.forEach(m => prev[m.k] = null);
+}
+function updateBoard() {
+  const d = derived(); d.iq = S.iqT ? Math.round(100 * S.iqC / S.iqT) : 0; d.iqC = S.iqC; d.iqT = S.iqT;
+  BOARD.forEach(m => {
+    const v = d[m.k], p = prev[m.k];
+    $('#mv-' + m.k).textContent = m.k === 'iq' && !S.iqT ? 'not started' : m.fmt(v, d);
+    $('#mf-' + m.k).style.width = (100 * v / m.max) + '%';
+    $('#mt-' + m.k).setAttribute('aria-valuenow', String(v));
+    if (p !== null && v !== p && m.k !== 'iq') {
+      const diff = v - p, dl = $('#md-' + m.k);
+      dl.textContent = (diff > 0 ? '+' : '−') + (m.k === 'budget' ? money(Math.abs(diff)) : Math.abs(diff));
+      dl.className = 'delta ' + (diff > 0 ? 'up' : 'down'); clearTimeout(dl._t); dl._t = setTimeout(() => { dl.textContent = ''; }, 3500);
+    }
+    prev[m.k] = v;
+  });
+}
+
+/* ---------- narration ---------- */
+const N = { on: true, voice: null, rate: .95, token: 0, ok: 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window };
+const voices = () => N.ok ? speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang)) : [];
+function pickVoice() { const vs = voices(); if (!vs.length) return null;
+  for (const re of [/Natural/i, /Neural|Online/i, /Google US English/i, /Samantha|Ava|Allison|Serena|Karen|Daniel/i, /Premium|Enhanced/i]) { const v = vs.find(v => re.test(v.name)); if (v) return v; }
+  return vs.find(v => /en[-_]US/i.test(v.lang)) || vs[0]; }
+function fillVoices() { const sel = $('#voiceSel'); if (!sel) return; const vs = voices(); sel.replaceChildren();
+  vs.forEach((v, i) => sel.append(h('option', { value: String(i) }, v.name + ' (' + v.lang + ')')));
+  if (!N.voice || !vs.includes(N.voice)) N.voice = pickVoice(); const i = vs.indexOf(N.voice); if (i >= 0) sel.value = String(i); }
+const prep = t => t.replace(/\bCPM\b/g, 'C P M').replace(/\bCPC\b/g, 'C P C').replace(/\bCPA\b/g, 'C P A').replace(/\bUGC\b/g, 'U G C').replace(/\bQR\b/g, 'Q R').replace(/\bAR\b/g, 'A R').replace(/\bB2B\b/g, 'B to B').replace(/−/g, 'minus ').replace(/\s+/g, ' ').trim();
+function chunks(t) { const p = t.match(/[^.!?]+[.!?]+["')\]]*\s*|[^.!?]+$/g) || [t]; const o = []; let c = ''; p.forEach(x => { if ((c + x).length > 170 && c) { o.push(c); c = x; } else c += x; }); if (c) o.push(c); return o; }
+function stopSpeech() { N.token++; if (N.ok) speechSynthesis.cancel(); }
+function speak(text, force) {
+  if (!N.ok || !(N.on || force) || !text) return; stopSpeech();
+  const my = N.token, list = chunks(prep(text));
+  setTimeout(() => { if (my !== N.token) return;
+    const next = i => { if (my !== N.token || i >= list.length) return; const u = new SpeechSynthesisUtterance(list[i]);
+      if (N.voice) { u.voice = N.voice; u.lang = N.voice.lang; } else u.lang = 'en-US'; u.rate = N.rate; u.onend = () => next(i + 1); u.onerror = () => {}; speechSynthesis.speak(u); };
+    next(0); }, 80);
+}
+function initNarr() {
+  if (!N.ok) { $('#controls').replaceChildren(h('span', { style: 'color:var(--muted);font-size:.9rem' }, 'Narration is not supported in this browser. All content is available as text.')); return; }
+  fillVoices(); speechSynthesis.addEventListener && speechSynthesis.addEventListener('voiceschanged', fillVoices);
+  const tg = $('#narrToggle');
+  tg.addEventListener('click', () => { N.on = !N.on; tg.setAttribute('aria-pressed', String(N.on)); tg.textContent = 'Narration: ' + (N.on ? 'On' : 'Off'); if (!N.on) stopSpeech(); });
+  $('#voiceSel').addEventListener('change', e => { N.voice = voices()[+e.target.value]; });
+  $('#rateSel').addEventListener('change', e => { N.rate = +e.target.value; });
+  $('#voiceTest').addEventListener('click', () => speak('Hi, I am Priya. Pick the voice that sounds best to you, and I will brief you from here.', true));
+}
+
+/* ---------- scaffolding ---------- */
+const STAGES = ['Briefing', 'Warm Up', 'Influencers', 'Choose Platforms', 'Content and Timing', 'Pay and Measure', 'Viral Moment and Privacy', 'Mobile Marketing', 'Evaluate', 'Launch Report'];
+let root;
+function newStage(i, kicker, title) {
+  stopSpeech(); const n = clamp(i, 0, 8);
+  $('#progLabel').textContent = i === 0 ? 'Briefing' : i === 9 ? 'Launch report' : 'Stage ' + i + ' of 8: ' + STAGES[i];
+  $('#progFill').style.width = (i === 9 ? 100 : 100 * n / 8) + '%'; $('#progBar').setAttribute('aria-valuenow', String(i === 9 ? 8 : n));
+  const st = $('#stage'); st.replaceChildren();
+  const hd = h('h2', { class: 'title', tabindex: '-1', id: 'stageHeading' }, title);
+  root = h('div', { class: 'wrap' }, h('p', { class: 'kicker' }, kicker), hd); st.append(root);
+  window.scrollTo(0, 0); hd.focus({ preventScroll: true }); return root;
+}
+function priya(text) {
+  const c = h('div', { class: 'card dana' }, h('div', { class: 'avatar', 'aria-hidden': 'true' }, 'PN'),
+    h('div', null, h('p', { class: 'who' }, 'Priya Nair'), h('p', { class: 'role' }, 'Head of Social Media, Wagstart Puppy Co.'), h('p', { class: 'say' }, text),
+      h('button', { class: 'btn ghost', type: 'button', style: 'margin-top:.4rem', onclick: () => speak(text, true) }, 'Replay narration')));
+  setTimeout(() => speak(text), 250); return c;
+}
+const button = (label, fn, cls = 'btn primary') => h('button', { class: cls, type: 'button', onclick: fn }, label);
+
+/* ---------- question engine ---------- */
+const TIER = { quiz: { best: 'Correct', ok: 'Not quite', poor: 'Not quite' }, decision: { best: 'Strong fit', ok: 'Workable', poor: 'Weak fit' } };
+function ask(host, item, cb, isLast) {
+  host.replaceChildren(); const qid = 'q' + (++uid); const kind = item.kind || 'quiz'; const card = h('div', { class: 'card' });
+  if (item.counter) card.append(h('p', { class: 'counter' }, item.counter));
+  if (item.scenario) card.append(h('p', { class: 'scenario' }, item.scenario));
+  card.append(h('p', { class: 'ask', id: qid }, item.prompt));
+  let opts = item.options.map(o => ({ ...o })); if (item.shuffle !== false) opts = shuffle(opts);
+  const btns = [], fb = h('div', { class: 'fb', role: 'status', 'aria-live': 'polite' }); let done = false;
+  const best = opts.find(o => o.tier === 'best');
+  const mk = o => { const b = h('button', { class: 'opt', type: 'button', 'aria-disabled': 'false' }, h('span', null, o.label), o.sub ? h('span', { class: 'sub' }, o.sub) : null);
+    o._btn = b; btns.push(b);
+    b.addEventListener('click', () => {
+      if (done) return; done = true; btns.forEach(x => x.setAttribute('aria-disabled', 'true')); b.classList.add('chosen', 't-' + o.tier);
+      b.append(h('span', { class: 'badge' }, (o.tier === 'best' ? '✓ ' : o.tier === 'ok' ? '~ ' : '✕ ') + TIER[kind][o.tier] + ' – your choice'));
+      if (o !== best && best) { best._btn.classList.add('reveal'); best._btn.append(h('span', { class: 'badge' }, '✓ ' + (kind === 'quiz' ? 'Correct answer' : 'Strongest fit'))); }
+      if (kind === 'quiz') { S.iqT++; if (o.tier === 'best') S.iqC++; }
+      if (o.apply) o.apply(); if (item.log) S.log.push({ stage: item.log, choice: o.label, tier: o.tier }); updateBoard();
+      const label = TIER[kind][o.tier]; fb.className = 'fb t-' + o.tier; fb.replaceChildren(h('div', { class: 'msg' }, h('strong', null, label + '.'), o.fb)); speak(label + '. ' + o.fb);
+      const nb = button(isLast ? 'Continue' : 'Next', () => cb()); card.append(h('div', { class: 'actions' }, nb)); nb.focus();
+    }); return b; };
+  if (opts.some(o => o.group)) [...new Set(opts.map(o => o.group))].forEach((g, i) => { const gid = qid + 'g' + i;
+    card.append(h('p', { class: 'groupname', id: gid }, g), h('div', { class: 'opts', role: 'group', 'aria-labelledby': gid + ' ' + qid }, opts.filter(o => o.group === g).map(mk))); });
+  else card.append(h('div', { class: 'opts', role: 'group', 'aria-labelledby': qid }, opts.map(mk)));
+  card.append(fb); host.append(card); if (item.say) speak(item.say);
+}
+function sequence(host, items, done) {
+  let i = 0;
+  const run = () => { const it = items[i]; if (items.length > 1 && !it.counter) it.counter = 'Question ' + (i + 1) + ' of ' + items.length;
+    ask(host, it, () => { i++; if (i < items.length) { run(); host.scrollIntoView({ block: 'nearest' }); } else done(); }, i === items.length - 1); };
+  run();
+}
+function classify(types, answer, scenario, explain, prompt) {
+  const ans = types.find(t => t.key === answer); const pr = prompt || 'Which term fits this situation?';
+  return { kind: 'quiz', scenario, prompt: pr, shuffle: false, say: scenario + ' ' + pr,
+    options: types.map(t => ({ label: t.label, group: t.group, tier: t.key === answer ? 'best' : 'poor', fb: t.key === answer ? explain : 'The best answer is ' + ans.label + '. ' + explain })) };
+}
+function calc(prompt, right, wrongs, why) {
+  return { kind: 'quiz', prompt, say: prompt, options: [{ label: right, tier: 'best', fb: why }, ...wrongs.map(w => ({ label: w, tier: 'poor', fb: 'The correct answer is ' + right + '. ' + why }))] };
+}
+
+/* ---------- planner ---------- */
+function planner(host, cfg) {
+  const sel = new Set(), byId = {}, all = [];
+  const status = h('p', { role: 'status', 'aria-live': 'polite', style: 'margin:.4rem 0;color:var(--amber);font-weight:600;min-height:1.4rem' });
+  const total = () => [...sel].reduce((s, id) => s + byId[id].cost, 0);
+  const sumText = h('span', { 'aria-live': 'polite' });
+  const lock = button(cfg.lockLabel, () => {
+    if (sel.size < cfg.min) { status.textContent = cfg.minMsg; return; }
+    all.forEach(b => b.setAttribute('aria-disabled', 'true')); lock.disabled = true; cfg.onLock([...sel].map(id => byId[id]), total());
+  });
+  const refresh = () => { sumText.textContent = sel.size + ' selected. Spend ' + money(total()) + ' of ' + money(cfg.cap) + '.'; };
+  const grid = h('div', { class: 'grid' });
+  cfg.items.forEach(it => {
+    byId[it.id] = it;
+    const t = h('button', { class: 'btn', type: 'button', 'aria-pressed': 'false', 'aria-label': 'Include ' + it.name + ', ' + money(it.cost), 'aria-disabled': 'false' }, 'Include in plan'); all.push(t);
+    const card = h('div', { class: 'pick' }, h('h4', null, it.name), h('div', { class: 'cost' }, money(it.cost)),
+      it.stats ? h('div', { class: 'stats' }, it.stats.map(s => h('span', null, s))) : null, h('ul', null, it.lines.map(l => h('li', null, l))), h('div', { class: 'toggle' }, t));
+    t.addEventListener('click', () => {
+      if (t.getAttribute('aria-disabled') === 'true') return;
+      if (sel.has(it.id)) { sel.delete(it.id); t.setAttribute('aria-pressed', 'false'); t.textContent = 'Include in plan'; card.classList.remove('on'); status.textContent = ''; }
+      else { if (total() + it.cost > cfg.cap) { status.textContent = 'Adding ' + it.name + ' would go over the ' + money(cfg.cap) + ' limit. Remove something first.'; return; }
+        sel.add(it.id); t.setAttribute('aria-pressed', 'true'); t.textContent = 'Included (select to remove)'; card.classList.add('on'); status.textContent = ''; }
+      refresh();
+    });
+    grid.append(card);
+  });
+  host.append(grid, status, h('div', { class: 'summarybar' }, sumText, lock)); refresh();
+}
+
+/* ============================================================
+   STAGE 0: BRIEFING
+   ============================================================ */
+function stageIntro() {
+  S = fresh(); updateBoard();
+  const r = newStage(0, 'Simulation', 'Social Launch: Wagstart Puppy Kit');
+  r.append(priya(['Welcome to Wagstart Puppy Co. Our Wagstart Kit gives new puppy owners a crate, leash, training treats, and an app with a daily training plan. It goes on sale in eight weeks, and we are launching it almost entirely through social media.',
+    'You are the social media marketing manager, with sixty thousand dollars. Over eight short stages you will choose influencers, platforms, content, a payment model, and mobile tools, and you will protect customer privacy along the way. Every decision spends money and moves your scoreboard.'].join(' ')));
+  r.append(h('div', { class: 'card' }, h('h3', null, 'By the end of this lesson, you will learn:'),
+    h('ul', { class: 'goals' },
+      h('li', null, 'What social media is and how it has transformed marketing communications'),
+      h('li', null, 'How brand managers use the six most prominent social media, plus LinkedIn, in marketing actions'),
+      h('li', null, 'How to select social media and choose social media content for a marketing program'),
+      h('li', null, 'How performance measures tied to costs (inputs) differ from those tied to revenues (outputs)'),
+      h('li', null, 'How the real and digital worlds are converging and what that means for the future of social media'))));
+  r.append(h('div', { class: 'card' }, h('h3', null, 'How this works'), h('p', { style: 'margin:.2rem 0' }, 'Everything is click-based, so no typing is needed. Narration reads each briefing aloud, and the same words always appear on screen. Use the Narration button at the top to turn the voice on or off, or open Voice settings to choose a voice that sounds best to you.')));
+  r.append(h('div', { class: 'actions' }, button('Start the launch', () => stageWarmUp())));
+}
+
+/* ============================================================
+   STAGE 1: WARM UP
+   ============================================================ */
+const TERMS = [
+  { key: 'sm', label: 'Social media' }, { key: 'ugc', label: 'User-generated content (UGC)' }, { key: 'inf', label: 'Influencer marketing' },
+  { key: 'ss', label: 'Social shopping' }, { key: 'sp', label: 'Social proof' }, { key: 'sc', label: 'Social commerce' }, { key: 'ce', label: 'Customer engagement' }];
+function stageWarmUp() {
+  const r = newStage(1, 'Stage 1 of 8', 'Warm Up: Name That Term');
+  r.append(priya('Before we plan anything, let us make sure we share the same vocabulary. Social media are online media where users interact with each other, and about eighty percent of their content is created by users. Read each situation and pick the term it describes.'));
+  const host = h('div'); r.append(host);
+  const items = shuffle([
+    classify(TERMS, 'sm', 'A website lets members post comments, photos, and videos, and a feedback process shows which topics are popular.', 'Social media are online media where users submit comments, photos, and videos, often with a feedback process that identifies popular topics.'),
+    classify(TERMS, 'ugc', 'A new owner posts an unboxing video of her puppy opening a Wagstart Kit. Nobody paid her to make it.', 'User-generated content is online media content that is publicly available and created by end users.'),
+    classify(TERMS, 'inf', 'Wagstart pays a local dog trainer to demonstrate the leash to her followers, instead of advertising only to prospective buyers.', 'Influencer marketing identifies and recruits influencers to advocate a company’s products, services, and brands.'),
+    classify(TERMS, 'ss', 'Shoppers share their latest purchases, deals, product reviews, and want lists with friends and contacts online.', 'Social shopping is the use of social networks by consumers to share purchases, deals, reviews, and want lists.'),
+    classify(TERMS, 'sp', 'A shopper sees that thousands of owners bought the same crate and decides to buy it too.', 'Social proof means people are likely to adopt the behavior they observe in others.'),
+    classify(TERMS, 'sc', 'A shopper browses the puppy kit and buys it inside a social app, without ever visiting the company website.', 'Social commerce lets consumers browse and buy online without using the company’s own website.'),
+    classify(TERMS, 'ce', 'A customer comments on a brand post, shares it with her network, and tags a friend. These are interactions she chose to perform.', 'Customer engagement is the degree and depth of brand-focused interactions a customer chooses to perform online with their social network.')
+  ]);
+  sequence(host, items, () => {
+    host.replaceChildren(h('div', { class: 'card' }, h('h3', null, 'Warm Up complete'), h('p', null, 'You now speak the language of social media marketing. Next, decide who will carry the Wagstart message.'),
+      h('div', { class: 'actions' }, button('Go to Stage 2', () => stageInfluencers())))); speak('Warm Up complete. Next, decide who will carry the Wagstart message.');
+  });
+}
+
+/* ============================================================
+   STAGE 2: INFLUENCERS
+   ============================================================ */
+const TIERS = [{ key: 'na', label: 'Nano-influencer' }, { key: 'mi', label: 'Micro-influencer' }, { key: 'ma', label: 'Macro-influencer' }, { key: 'me', label: 'Mega-influencer' }];
+function stageInfluencers() {
+  const r = newStage(2, 'Stage 2 of 8', 'Recruit Influencers');
+  r.append(priya('Purchases are influenced by other people, so we partner with creators who can engage their followers. Influencers are grouped by size. Nano-influencers have fewer than ten thousand followers, micro-influencers fewer than fifty thousand, macro-influencers between five hundred thousand and one million, and mega-influencers more than one million. Follower counts depend on perceived credibility. You have twelve thousand dollars for this stage.'));
+  const host = h('div'); r.append(host);
+  const t = (ans, n, why) => classify(TIERS, ans, 'A creator has ' + n + ' followers.', why, 'Which influencer tier is this?');
+  const items = [
+    t('na', '8,500', 'Nano-influencers have fewer than 10,000 followers.'),
+    t('mi', '35,000', 'Micro-influencers have fewer than 50,000 followers.'),
+    t('ma', '700,000', 'Macro-influencers have 500,000 to 1,000,000 followers.'),
+    t('me', '2.4 million', 'Mega-influencers have more than 1,000,000 followers.'),
+    { kind: 'decision', log: 'Influencer partnership', scenario: 'Wagstart is a new brand. Credibility matters, because shoppers trust people who actually train puppies. You have up to $12,000.', prompt: 'Which partnership do you choose?', shuffle: false,
+      say: 'Wagstart is a new brand, and credibility matters, because shoppers trust people who actually train puppies. You have up to twelve thousand dollars. Which partnership do you choose?',
+      options: [
+        { label: 'Micro-influencers', sub: '$8,000. Two puppy-training creators under 50,000 followers each.', tier: 'best', apply: () => { S.spent += 8000; S.awAdd += 9; S.engAdd += 10; S.trustAdd += 5; }, fb: 'Micro-influencers combine real credibility with a loyal, engaged audience at a price a new brand can afford.' },
+        { label: 'Nano-influencers', sub: '$3,000. Six local owners and trainers under 10,000 followers each.', tier: 'ok', apply: () => { S.spent += 3000; S.awAdd += 5; S.engAdd += 12; S.trustAdd += 6; }, fb: 'Very credible and inexpensive, but each has a small audience, so the reach is modest. The saved money could support more reach elsewhere.' },
+        { label: 'Macro-influencer', sub: '$11,000. One pet lifestyle creator with 700,000 followers, a single post.', tier: 'ok', apply: () => { S.spent += 11000; S.awAdd += 12; S.engAdd += 6; S.trustAdd += 2; }, fb: 'A macro-influencer delivers large reach, but one post uses nearly the whole stage budget and engagement per follower tends to be lower.' },
+        { label: 'Mega-influencer', sub: '$12,000. One short mention from a creator with 2.4 million followers.', tier: 'poor', apply: () => { S.spent += 12000; S.awAdd += 14; S.engAdd += 3; S.trustAdd -= 2; }, fb: 'Huge reach, but a brief paid mention from someone who is not a puppy expert has low credibility. Followers alone do not create trust.' }
+      ] }
+  ];
+  sequence(host, items, () => {
+    host.replaceChildren(h('div', { class: 'card' }, h('h3', null, 'Partners signed'), h('p', null, 'Your influencer partners are lined up. Next, choose which social media platforms will carry the campaign.'),
+      h('div', { class: 'actions' }, button('Go to Stage 3', () => stagePlatforms())))); speak('Your influencer partners are lined up. Next, choose which platforms will carry the campaign.');
+  });
+}
+
+/* ============================================================
+   STAGE 3: PLATFORMS
+   ============================================================ */
+const PLAT = [
+  { id: 'ig', name: 'Instagram', cost: 8000, pts: 24, fit: 1.0, eng: 8, users: 2.0, mk: 79, infl: 77, com: 12, er: '1.4%',
+    lines: ['Photo and video sharing designed for mobile phones; 30 percent of users are 18 to 24 and 35 percent are 25 to 34', 'Carousel ads, Reels, and Checkout let shoppers buy'],
+    note: 'Mobile-first and visual, with about 65 percent of users ages 18 to 34 and the highest engagement rate, which suits puppy photos and videos.' },
+  { id: 'fb', name: 'Facebook', cost: 8000, pts: 22, fit: .85, eng: 6, users: 2.9, mk: 90, infl: 58, com: 19, er: '0.16%',
+    lines: ['Largest audience; accounts for about 80 percent of U.S. social commerce', 'Paid ads and sponsored stories; post fresh content and engage fans'],
+    note: 'Largest audience and the leader in social commerce, so it helps shoppers buy, though engagement per post is modest.' },
+  { id: 'tt', name: 'TikTok', cost: 7000, pts: 18, fit: .9, eng: 7, users: 1.1, mk: 18, infl: 50, com: 8, er: null,
+    lines: ['Short videos from 3 seconds to 10 minutes; 25 percent of users are under 20', 'Influencer collaborations gain brand exposure; ads are managed with analytics'],
+    note: 'Short, playful videos and creator collaborations fit puppy content, though the audience skews very young.' },
+  { id: 'yt', name: 'YouTube', cost: 9000, pts: 20, fit: .85, eng: 5, users: 2.5, mk: 52, infl: 44, com: 9, er: null,
+    lines: ['Video sharing with a very large audience; owned by Google', 'Build a branded channel, use keywords for search, and use analytics to target viewers'],
+    note: 'Ideal for how-to training videos that people search for, but video production and ads are the costliest option.' },
+  { id: 'pin', name: 'Pinterest', cost: 5000, pts: 12, fit: .8, eng: 4, users: 0.4, mk: 36, infl: 15, com: 6, er: null,
+    lines: ['Pinboards organized around themes; 76 percent of users are female', '48 percent of users shop and look for new products'],
+    note: 'Pinboards for puppy-raising plans reach shoppers who are planning purchases, though the audience is smaller.' },
+  { id: 'x', name: 'X (formerly Twitter)', cost: 4000, pts: 8, fit: .35, eng: 1, users: 0.6, mk: 43, infl: 25, com: 5, er: '0.1%',
+    lines: ['Messages up to 280 characters; good for brand buzz and engaging customers', 'Few social commerce buyers'],
+    note: 'Good for buzz and customer service, but engagement is the lowest and it is a weak fit for visual puppy content.' },
+  { id: 'li', name: 'LinkedIn', cost: 4000, pts: 4, fit: .1, eng: 0, users: 0.8, mk: 61, infl: 20, com: 0, er: null,
+    lines: ['Professional networking and job search; strong for building a business-to-business (B2B) image', 'No social commerce use'],
+    note: 'Built for professional networking and B2B, so it is a poor fit for a consumer puppy brand.' }
+];
+function stagePlatforms() {
+  const r = newStage(3, 'Stage 3 of 8', 'Choose Your Platforms');
+  r.append(priya('To select social media, we assess the characteristics of visitors and the number of unique visitors. Audience size matters, but so does fit, and so does engagement. Customer engagement rate is the number of interactions divided by the number of followers. Try two quick calculations, then build your platform plan.'));
+  const host = h('div'); r.append(host);
+  sequence(host, [
+    calc('A set of posts draws 840 interactions from 60,000 followers. What is the customer engagement rate?', '1.4%', ['14%', '0.14%', '71%'], 'Engagement rate equals interactions divided by followers: 840 divided by 60,000 is 0.014, or 1.4 percent.'),
+    calc('Instagram’s overall engagement rate is about 1.4 percent and X is about 0.1 percent. With 50,000 followers on each, how many more interactions would you expect on Instagram?', 'About 650 more', ['About 700 more', 'About 50 more', 'About 1,300 more'], 'Instagram: 1.4 percent of 50,000 is 700. X: 0.1 percent of 50,000 is 50. The difference is 650.')
+  ], () => buildPlatformPlan(host));
+}
+function buildPlatformPlan(host) {
+  host.replaceChildren(h('div', { class: 'card' }, h('h3', null, 'Build your platform plan'),
+    h('p', { style: 'margin:.2rem 0' }, 'Choose at least two platforms with a combined cost of no more than $24,000. Each card shows users in billions, the percent of U.S. marketers using the platform, the percent who call it important for influencer marketing, and the percent of digital buyers using it for social commerce. Your target audience is new puppy owners, ages 22 to 40.')));
+  speak('Build your platform plan. Choose at least two platforms, with a combined cost of no more than twenty-four thousand dollars. Think about your target audience, which is new puppy owners ages twenty-two to forty.');
+  const area = h('div'); host.append(area);
+  planner(area, { cap: PLAT_CAP, min: 2, minMsg: 'Choose at least two platforms before you lock in the plan.', lockLabel: 'Lock in platform plan',
+    items: PLAT.map(p => ({ ...p, stats: [p.users + 'B users', 'Marketers ' + p.mk + '%', 'Influencer use ' + p.infl + '%', 'Commerce ' + p.com + '%', p.er ? 'Engagement ' + p.er : 'Engagement n/a'] })),
+    onLock: (sel, total) => {
+      S.plats = sel; S.platSpent = total; S.spent += total;
+      S.awBase = sel.reduce((s, p) => s + p.pts * p.fit, 0); S.engAdd += sel.reduce((s, p) => s + p.eng, 0); S.salesAdd += Math.round(sel.reduce((s, p) => s + p.com, 0) * 0.3);
+      updateBoard();
+      host.replaceChildren(h('div', { class: 'card' }, h('h3', null, 'Your platform plan'),
+        h('table', null, h('thead', null, h('tr', null, h('th', null, 'Platform'), h('th', null, 'Cost'), h('th', null, 'How it fits'))),
+          h('tbody', null, sel.map(p => h('tr', null, h('td', null, p.name), h('td', null, money(p.cost)), h('td', null, p.note))))),
+        h('p', { style: 'margin-top:.8rem' }, 'Total spend ' + money(total) + '. The best plans do not simply chase the biggest audience. They match the audience that is likely to buy and to engage with the brand.'),
+        h('div', { class: 'actions' }, button('Go to Stage 4', () => stageContent()))));
+      speak('Platform plan locked. Total spend ' + money(total) + '. The best plans match the audience that is likely to buy and engage, not simply the biggest audience.');
+    } });
+}
+
+/* ============================================================
+   STAGE 4: CONTENT AND TIMING
+   ============================================================ */
+const CONTENT = [
+  { key: 'edu', label: 'Educational' }, { key: 'ins', label: 'Inspirational' }, { key: 'int', label: 'Interactive' }, { key: 'con', label: 'Connecting' },
+  { key: 'pro', label: 'Promotional' }, { key: 'new', label: 'Newsworthy' }, { key: 'ent', label: 'Entertaining' }];
+function stageContent() {
+  const r = newStage(4, 'Stage 4 of 8', 'Content and Timing');
+  r.append(priya('Content is the information and experience we direct to our audience. The quality of social media largely depends on the creative. Before we plan the calendar, match each post idea to the type of content it represents. Then decide on the mix and the timing.'));
+  const host = h('div'); r.append(host);
+  const C = {
+    edu: ['A short video showing how to crate-train a puppy in five steps.', 'Educational content teaches the audience something useful.'],
+    ins: ['A post following a rescue puppy from the shelter to a forever home.', 'Inspirational content moves people emotionally and motivates them.'],
+    int: ['A poll asking followers to vote on the name of the Wagstart mascot puppy.', 'Interactive content invites the audience to take part.'],
+    con: ['A thread where new puppy owners meet, swap photos, and find local walking groups.', 'Connecting content brings audience members together with each other and with the brand.'],
+    pro: ['A post announcing 15 percent off the Wagstart Kit this weekend.', 'Promotional content directly promotes a product or offer.'],
+    new: ['A post announcing a partnership that donates a kit to a local shelter for every ten sold.', 'Newsworthy content shares timely announcements.'],
+    ent: ['A funny clip of a puppy chasing its own tail through a pile of leaves.', 'Entertaining content is meant to amuse the audience.']
+  };
+  const items = shuffle(Object.keys(C)).slice(0, 5).map(k => classify(CONTENT, k, C[k][0], C[k][1], 'Which type of social media content is this?'));
+  items.push({ kind: 'decision', log: 'Content mix', scenario: 'You are planning the first four weeks. Ask of every post: is it promotional, entertaining, or educational, and how does it complement the rest of the integrated marketing communications?', prompt: 'Which content mix do you choose?', shuffle: true,
+    say: 'You are planning the first four weeks. Which content mix do you choose?',
+    options: [
+      { label: 'Mostly educational and entertaining, with some interactive posts and a light dose of promotional content', tier: 'best', apply: () => { S.engAdd += 18; S.trustAdd += 4; S.salesAdd += 3; }, fb: 'A varied mix gives people a reason to follow and share, and earns the right to promote. Followers who trust the content respond better when a promotion does appear.' },
+      { label: 'Only entertaining content', tier: 'ok', apply: () => { S.engAdd += 11; }, fb: 'Entertaining posts earn attention and shares, but with no teaching or promotion, they do little to move people toward buying.' },
+      { label: 'Only educational content', tier: 'ok', apply: () => { S.engAdd += 10; S.trustAdd += 3; }, fb: 'Educational posts build trust, but a feed with only lessons can feel flat and rarely invites sharing or action.' },
+      { label: 'Almost entirely promotional content', tier: 'poor', apply: () => { S.engAdd += 2; S.trustAdd -= 2; }, fb: 'A feed full of sales messages gives followers little reason to engage or share, and engagement falls.' }
+    ] });
+  items.push({ kind: 'decision', log: 'Posting time', scenario: 'Research shows that engagement tends to be highest on Tuesdays and Wednesdays before 2:00 p.m. (CST), and low on weekends and evenings. However, the best days and times vary for different social media.', prompt: 'When will you post?', shuffle: true,
+    say: 'Research shows that engagement tends to be highest on Tuesdays and Wednesdays before two p.m. Central, and low on weekends and evenings. However, the best times vary by platform. When will you post?',
+    options: [
+      { label: 'Start with Tuesday and Wednesday before 2:00 p.m. (CST), then use each platform’s analytics to adjust', tier: 'best', apply: () => { S.engAdd += 10; }, fb: 'Start with what research shows works, then let your own analytics fine-tune the schedule for each platform.' },
+      { label: 'Post only on Tuesday and Wednesday mornings, and never change the schedule', tier: 'ok', apply: () => { S.engAdd += 6; }, fb: 'This is a good starting point, but best days and times vary by platform, so a fixed schedule leaves engagement on the table.' },
+      { label: 'Post all day, every day, on every platform', tier: 'poor', apply: () => { S.engAdd += 2; }, fb: 'Constant posting can wear out followers and ignores the times when the audience is actually active.' },
+      { label: 'Post on weekend evenings, when people have free time', tier: 'poor', apply: () => { S.engAdd += 0; }, fb: 'Weekend and evening posts are associated with low engagement. Free time does not guarantee attention.' }
+    ] });
+  sequence(host, items, () => {
+    host.replaceChildren(h('div', { class: 'card' }, h('h3', null, 'Calendar set'), h('p', null, 'Your content and timing plan is ready. Now decide how you will pay for performance, and which numbers will prove the campaign worked.'),
+      h('div', { class: 'actions' }, button('Go to Stage 5', () => stagePay())))); speak('Your content and timing plan is ready. Now decide how you will pay for performance.');
+  });
+}
+
+/* ============================================================
+   STAGE 5: PAY AND MEASURE
+   ============================================================ */
+const PAYM = [
+  { key: 'cpm', label: 'Cost per thousand (CPM)' }, { key: 'cpc', label: 'Cost per click (CPC)' }, { key: 'cpa', label: 'Cost per action (CPA)' }];
+function stagePay() {
+  const r = newStage(5, 'Stage 5 of 8', 'Pay and Measure');
+  r.append(priya('Social media performance measures link to costs, or inputs, and to revenues, or outputs. The cost-linked measures are cost per thousand, cost per click, and cost per action. Match each offer to its pricing model, try two calculations, and then choose how Wagstart will pay for its ads.'));
+  const host = h('div'); r.append(host);
+  const items = [
+    classify(PAYM, 'cpm', '“I will pay $0.50 for every 1,000 times this ad loads, up to $100 per month.”', 'With CPM, advertisers pay for every thousand impressions. It is simple and suits advertisers who want to build awareness, but impressions do not always lead to sales.', 'Which pricing model is this?'),
+    classify(PAYM, 'cpc', '“I will pay $1 for every visitor who clicks on this ad and goes from your website to mine.”', 'With CPC, the advertiser pays only for a visitor who has expressed interest by clicking.', 'Which pricing model is this?'),
+    classify(PAYM, 'cpa', '“I will pay $5 for every purchase that originates from an ad on your site.”', 'With CPA, the advertiser pays only for what works, a completed action such as a purchase. It is harder to track and costs more per action.', 'Which pricing model is this?'),
+    calc('An ad is priced at $0.50 per 1,000 loads (CPM) and loads 400,000 times. What does it cost?', '$200', ['$20', '$2,000', '$0.50'], 'There are 400 thousands of loads, and 400 times $0.50 is $200.'),
+    calc('An ad is priced at $1 per click (CPC) and earns 3,000 clicks that produce 150 purchases. What is the cost per purchase?', '$20', ['$3,000', '$1', '$2'], 'The ad costs $3,000 in clicks, and $3,000 divided by 150 purchases is $20 per purchase.'),
+    { kind: 'decision', log: 'Pricing model', scenario: 'Wagstart’s online store can trace every purchase back to the ad that started it, and the team wants to pay only for what works. Tracking tools cost $3,000.', prompt: 'Which model do you choose for the main ad campaign?', shuffle: true,
+      say: 'Wagstart’s online store can trace every purchase back to the ad that started it, and the team wants to pay only for what works. Tracking tools cost three thousand dollars. Which model do you choose for the main ad campaign?',
+      options: [
+        { label: 'Cost per action (CPA), with the tracking tools', sub: '$3,000 for tracking', tier: 'best', apply: () => { S.spent += 3000; S.salesAdd += 8; }, fb: 'Because purchases can be traced, CPA means you pay only for what works. It is a strong match for a sophisticated advertiser with tracking in place.' },
+        { label: 'Cost per click (CPC)', sub: 'No extra cost', tier: 'ok', apply: () => { S.salesAdd += 5; }, fb: 'You pay only for visitors who showed interest, which is good, but a click does not guarantee a purchase, so some spending will not produce sales.' },
+        { label: 'Cost per thousand (CPM)', sub: 'No extra cost', tier: 'poor', apply: () => { S.awAdd += 4; S.salesAdd += 1; }, fb: 'CPM builds awareness cheaply, but impressions do not always lead to sales, and the goal is purchases.' }
+      ] }
+  ];
+  sequence(host, items, () => {
+    host.replaceChildren(h('div', { class: 'card' }, h('h3', null, 'Payment model set'), h('p', null, 'Spending is tied to performance. Next, the campaign meets two tests that no plan can schedule: an unexpected viral moment and a privacy temptation.'),
+      h('div', { class: 'actions' }, button('Go to Stage 6', () => stageViral())))); speak('Spending is tied to performance. Next, the campaign meets an unexpected viral moment and a privacy temptation.');
+  });
+}
+
+/* ============================================================
+   STAGE 6: VIRAL MOMENT AND PRIVACY
+   ============================================================ */
+function stageViral() {
+  const r = newStage(6, 'Stage 6 of 8', 'Viral Moment and Privacy');
+  r.append(priya('Two tests are about to arrive. First, a customer’s video starts to go viral. Brand managers are told to watch for opportunities to manage luck, and to use both social and traditional media. Second, a data broker is calling.'));
+  const host = h('div'); r.append(host);
+  const items = [
+    { kind: 'decision', log: 'Viral moment', scenario: 'Week five. A customer posts a video of her puppy proudly dragging a Wagstart crate blanket across the living room. It has two million views in two days, and she has tagged Wagstart.', prompt: 'How do you respond?', shuffle: true,
+      say: 'Week five. A customer posts a video of her puppy proudly dragging a Wagstart crate blanket across the living room. It has two million views in two days, and she has tagged Wagstart. How do you respond?',
+      options: [
+        { label: 'Thank her publicly, ask permission to share her video, link to the shop, and send a news release to local media', tier: 'best', apply: () => { S.awAdd += 12; S.engAdd += 8; S.salesAdd += 6; S.trustAdd += 4; }, fb: 'This turns luck into momentum. Asking permission respects the creator, the link helps viewers buy, and traditional media extends the reach of a social moment.' },
+        { label: 'Reply with a discount code and nothing more', tier: 'ok', apply: () => { S.awAdd += 5; S.engAdd += 3; S.salesAdd += 3; }, fb: 'A friendly response helps, but you miss the chance to amplify the video and connect it to your other media.' },
+        { label: 'Repost her video on every Wagstart channel without asking', tier: 'poor', apply: () => { S.awAdd += 6; S.trustAdd -= 6; }, fb: 'Using a customer’s content without permission damages trust and can cause backlash, even when the video helps your reach.' },
+        { label: 'Do nothing and let luck take care of itself', tier: 'poor', apply: () => { S.awAdd += 3; }, fb: 'Luck opens the door, but the brand has to walk through it. A viral moment fades fast if nobody manages it.' }
+      ] },
+    { kind: 'decision', log: 'Customer data', scenario: 'A data broker offers $8,000 for Wagstart customers’ purchase history, location, and content data. Social media users already worry about privacy: about 68 percent of internet users do not feel adequately protected.', prompt: 'What do you do?', shuffle: true,
+      say: 'A data broker offers eight thousand dollars for Wagstart customers’ purchase history, location, and content data. About sixty-eight percent of internet users do not feel adequately protected. What do you do?',
+      options: [
+        { label: 'Decline, publish a plain-language privacy policy, and give customers an easy way to opt out of targeting', tier: 'best', apply: () => { S.trustAdd += 8; }, fb: 'Protecting customer data and giving users control builds the trust a young brand depends on. Many users already take steps to mask their data.' },
+        { label: 'Sell only anonymized data from customers who opted in, and tell customers clearly', tier: 'ok', apply: () => { S.trustAdd += 2; }, fb: 'Consent and transparency help, but any sale of customer data still carries risk if the data can be traced back to people.' },
+        { label: 'Collect more customer data first, so the ads can be more precise', tier: 'poor', apply: () => { S.trustAdd -= 8; S.engAdd -= 2; }, fb: 'Collecting more than you need raises the privacy risk and can drive customers to opt out or leave.' },
+        { label: 'Sell the data, because customers will never notice', tier: 'poor', apply: () => { S.trustAdd -= 15; }, fb: 'Selling personal data without consent is a serious breach of trust. If customers find out, the damage to the brand can far exceed the $8,000.' }
+      ] }
+  ];
+  sequence(host, items, () => {
+    host.replaceChildren(h('div', { class: 'card' }, h('h3', null, 'Both tests handled'), h('p', null, 'Next, the future of social media. The real and digital worlds are converging, and mobile marketing is tightening the link between a message and an action.'),
+      h('div', { class: 'actions' }, button('Go to Stage 7', () => stageMobile())))); speak('Next, the future of social media. The real and digital worlds are converging, and mobile marketing is tightening the link between a message and an action.');
+  });
+}
+
+/* ============================================================
+   STAGE 7: MOBILE
+   ============================================================ */
+const MOBILE = [
+  { id: 'qr', name: 'QR codes on packaging and in stores', cost: 2000, tier: 'ok', fx: { sales: 4, eng: 3 }, lines: ['Strength: shoppers scan to see product videos, reviews, and training tips', 'Watch-out: the same scan lets shoppers compare prices with competitors'] },
+  { id: 'loc', name: 'Location-based promotion', cost: 4000, tier: 'ok', fx: { sales: 8, eng: 4, trust: -2 }, lines: ['Strength: GPS check-in at partner pet stores unlocks a coupon', 'Watch-out: tracking location raises privacy concerns, so it needs a clear opt-in'] },
+  { id: 'loy', name: 'Mobile loyalty points', cost: 5000, tier: 'best', fx: { sales: 6, eng: 8, trust: 1 }, lines: ['Strength: points for walking into partner stores and for repeat purchases', 'Watch-out: slow to pay off if customers buy only once per puppy'] },
+  { id: 'ar', name: 'Augmented reality crate preview', cost: 6000, tier: 'best', fx: { sales: 9, eng: 6 }, lines: ['Strength: shoppers see the crate in their own living room, linking real and digital worlds', 'Watch-out: costs more and depends on accurate product models'] },
+  { id: 'shop', name: 'In-app social shop and checkout', cost: 3000, tier: 'best', fx: { sales: () => (S.plats.some(p => p.id === 'ig' || p.id === 'fb') ? 13 : 4) }, lines: ['Strength: shoppers browse and buy without leaving the app', 'Watch-out: works best on platforms where you already have an audience and commerce tools'] },
+  { id: 'game', name: 'Game-style training challenge', cost: 7000, tier: 'ok', fx: { eng: 12, sales: 4 }, lines: ['Strength: streaks, badges, and friend challenges keep owners coming back, as successful games do', 'Watch-out: the highest cost, and it must stay challenging to keep players engaged'] }
+];
+function stageMobile() {
+  const r = newStage(7, 'Stage 7 of 8', 'Mobile Marketing');
+  r.append(priya('Smartphone apps are accelerating the convergence of the real and digital worlds. Mobile marketing tightens the link between a message and an action. Shoppers scan barcodes and QR codes to compare prices, check in with GPS for location-based promotions, and earn loyalty points for walking into stores. You have twelve thousand dollars. Choose at least two tools, and think about privacy, because the more data a tool collects, the more trust is at stake.'));
+  const host = h('div'); r.append(host);
+  planner(host, { cap: MOBILE_CAP, min: 2, minMsg: 'Choose at least two mobile tools before you lock in.', lockLabel: 'Lock in mobile tools', items: MOBILE.map(m => ({ ...m })),
+    onLock: (sel, total) => {
+      S.mobile = sel; S.spent += total;
+      sel.forEach(m => { const f = m.fx; const g = x => (typeof x === 'function' ? x() : x || 0); S.salesAdd += g(f.sales); S.engAdd += g(f.eng); S.trustAdd += g(f.trust); });
+      updateBoard();
+      host.replaceChildren(h('div', { class: 'card' }, h('h3', null, 'Your mobile toolkit'),
+        h('table', null, h('thead', null, h('tr', null, h('th', null, 'Tool'), h('th', null, 'Cost'))), h('tbody', null, sel.map(m => h('tr', null, h('td', null, m.name), h('td', null, money(m.cost)))))),
+        h('p', { style: 'margin-top:.8rem' }, 'Total spend ' + money(total) + '. Tools that link a message directly to a purchase tend to pay off fastest, and the ones that collect location or personal data need the clearest customer consent.'),
+        h('div', { class: 'actions' }, button('Go to Stage 8', () => stageEvaluate()))));
+      speak('Mobile tools locked. Total spend ' + money(total) + '. Tools that link a message directly to a purchase tend to pay off fastest, and tools that collect location data need the clearest consent.');
+    } });
+}
+
+/* ============================================================
+   STAGE 8: EVALUATE
+   ============================================================ */
+const OUT = [
+  { key: 'ctr', label: 'Click-through rate' }, { key: 'uv', label: 'Unique visitors' }, { key: 'sov', label: 'Share of voice' },
+  { key: 'fs', label: 'Fan source' }, { key: 'ir', label: 'Interaction rate' }, { key: 'pv', label: 'Page views' }];
+function stageEvaluate() {
+  const r = newStage(8, 'Stage 8 of 8', 'Evaluate the Campaign');
+  r.append(priya('Eight weeks have passed. Besides cost-linked measures, brand managers track performance measures linked to outputs, or revenues. Match each situation to the measure it describes.'));
+  const host = h('div'); r.append(host);
+  const q = (k, sc, why) => classify(OUT, k, sc, why, 'Which output measure is this?');
+  const items = shuffle([
+    q('ctr', 'Of everyone who saw the Wagstart ad, 3 percent clicked it to visit the shop.', 'Click-through rate is the share of viewers who click an ad.'),
+    q('uv', 'Analytics count 48,000 different individual people who visited the Wagstart page, with repeat visits counted only once.', 'Unique visitors counts each individual person once, no matter how often they return.'),
+    q('sov', 'Wagstart compares how often people talk about its brand online relative to the competing puppy-kit brands.', 'Share of voice compares the brand’s presence in conversation with competitors.'),
+    q('fs', 'The team studies whether new followers came from an influencer post, a paid ad, or a friend’s share.', 'Fan source tells you where your fans came from.'),
+    q('pv', 'The site records every time any page of the Wagstart profile loads, including repeat loads by the same person.', 'Page views counts the total number of pages viewed, including repeat views.')
+  ]);
+  sequence(host, items, () => finalReport());
+}
+
+/* ============================================================
+   STAGE 9: REPORT
+   ============================================================ */
+function platTier() { const a = S.plats.reduce((s, p) => s + p.fit, 0) / Math.max(1, S.plats.length); return a >= .8 ? 'best' : a >= .55 ? 'ok' : 'poor'; }
+function mobTier() { const v = { best: 2, ok: 1, poor: 0 }; const a = S.mobile.reduce((s, m) => s + v[m.tier], 0) / Math.max(1, S.mobile.length); return a >= 1.5 ? 'best' : a >= .75 ? 'ok' : 'poor'; }
+function finalReport() {
+  const r = newStage(9, 'Launch complete', 'Launch Report');
+  const d = derived(), iqPct = S.iqT ? Math.round(100 * S.iqC / S.iqT) : 0;
+  const score = Math.round(0.25 * d.reach + 0.25 * d.sales + 0.15 * d.trust + 0.15 * d.eng + 0.20 * iqPct);
+  const title = score >= 78 ? 'Social Media Director' : score >= 65 ? 'Brand Manager' : score >= 45 ? 'Social Media Associate' : 'Social Media Intern';
+  const buyers = d.sales * 1000, cpa = buyers ? S.spent / buyers : null;
+  const lows = [['reach', d.reach], ['engagement', d.eng], ['sales', d.sales], ['brand trust', d.trust]].sort((a, b) => a[1] - b[1]);
+  const weak = lows[0];
+  const say = 'Launch week is complete. Reach was ' + d.reach + ' out of 100, engagement ' + d.eng + ', sales ' + d.sales + ', and brand trust ' + d.trust + '. You answered ' + S.iqC + ' of ' + S.iqT + ' knowledge questions correctly. Your launch score is ' + score + ', which earns the title of ' + title + '. Your weakest result was ' + weak[0] + ', so look there first when you review your decisions.';
+  r.append(priya(say));
+  r.append(h('div', { class: 'card hero' },
+    h('div', null, h('p', { class: 'counter' }, 'Launch score'), h('div', { class: 'big', id: 'bigScore' }, reduceMotion ? String(score) : '0'), h('p', { style: 'margin:.4rem 0 0;font-size:1.2rem;font-weight:800' }, title)),
+    h('div', null, h('table', null, h('tbody', [['Reach', d.reach + ' of 100'], ['Engagement', d.eng + ' of 100'], ['Sales', d.sales + ' of 100'], ['Brand trust', d.trust + ' of 100'], ['Marketing IQ', S.iqC + ' of ' + S.iqT + ' (' + iqPct + '%)'],
+      ['Money spent', money(S.spent) + ' of ' + money(BUDGET)], ['Cost per first-time buyer (illustrative)', cpa ? '$' + cpa.toFixed(2) : 'not available']].map(x => h('tr', null, h('th', null, x[0]), h('td', null, x[1]))))),
+      h('p', { style: 'margin:.6rem 0 0;color:var(--muted)' }, 'Weakest result: ' + weak[0] + '.'))));
+  if (!reduceMotion) { const el = $('#bigScore'), t0 = performance.now(); const tick = t => { const p = Math.min(1, (t - t0) / 1200); el.textContent = String(Math.round(score * p)); if (p < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }
+  const pill = t => h('span', { class: 'pill ' + t }, (t === 'best' ? '✓ ' : t === 'ok' ? '~ ' : '✕ ') + TIER.decision[t]);
+  const rows = S.log.map(l => h('tr', null, h('td', null, l.stage), h('td', null, l.choice), h('td', null, pill(l.tier))));
+  rows.push(h('tr', null, h('td', null, 'Platform plan'), h('td', null, S.plats.map(p => p.name).join(', ') + ' (' + money(S.platSpent) + ')'), h('td', null, pill(platTier()))));
+  rows.push(h('tr', null, h('td', null, 'Mobile tools'), h('td', null, S.mobile.map(m => m.name).join(', ')), h('td', null, pill(mobTier()))));
+  r.append(h('div', { class: 'card' }, h('h3', null, 'Your decisions'), h('table', null, h('thead', null, h('tr', null, h('th', null, 'Decision'), h('th', null, 'Your choice'), h('th', null, 'Result'))), h('tbody', null, rows))));
+  const dl = (t, dd) => [h('dt', null, t), h('dd', null, dd)];
+  r.append(h('details', null, h('summary', null, 'Go Deeper: key ideas from this chapter'), h('dl', null,
+    dl('Social media and user-generated content', 'Social media are online media where users interact and submit content. About 80 percent of the content is user-generated.'),
+    dl('Influencer tiers', 'Nano under 10,000 followers, micro under 50,000, macro 500,000 to 1,000,000, and mega over 1,000,000. Credibility drives influence.'),
+    dl('Choosing platforms', 'Assess visitor characteristics and the number of unique visitors, then weigh fit and engagement, not size alone.'),
+    dl('Content types', 'Educational, inspirational, interactive, connecting, promotional, newsworthy, and entertaining. Mix them, and time posts using research and analytics.'),
+    dl('Cost-linked measures', 'CPM pays per thousand impressions, CPC pays per click, and CPA pays per action such as a purchase.'),
+    dl('Output measures', 'Users, fans, share of voice, page views, visitors, unique visitors, average page views per visitor, interaction rate, click-through rate, and fan source.'),
+    dl('Convergence and privacy', 'Apps, AR, and location tools link real and digital worlds, but more data collected means more privacy responsibility.'))));
+  r.append(h('div', { class: 'actions' }, button('Play again', () => stageIntro(), 'btn'), button('Replay the debrief', () => speak(say, true), 'btn ghost')));
+}
+
+/* ---------- boot ---------- */
+buildBoard(); S = fresh(); updateBoard(); initNarr();
+$('#stage').append(h('div', { class: 'wrap' }, h('p', { class: 'kicker' }, 'Simulation'), h('h2', { class: 'title', tabindex: '-1' }, 'Social Launch: Wagstart Puppy Kit'),
+  h('div', { class: 'card' }, h('p', { style: 'margin:.1rem 0 .8rem' }, 'Select the button below to begin. Narration starts after you select it, because browsers only allow audio after you interact with the page.'), button('Begin', () => stageIntro()))));
+})();
+</script>
+</body>
+</html>
